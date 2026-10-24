@@ -1,7 +1,8 @@
 /*
  * Corne keymap — layers 0-3 match the seller (KBDKSP) stock firmware,
  * decoded from KBDKSP_Corne_nicenanov2_ZMK_left.uf2.
- * Layer 4 (MOUSE) is new: hold SPACE.
+ * New: MOUSE layer on hold SPACE; GAME layer (toggle: L1+L2 then G) makes
+ * SPACE a plain key so it can be held in games.
  */
 
 #include <behaviors.dtsi>
@@ -11,12 +12,13 @@
 #include <input/processors.dtsi>
 
 #define BASE  0
-#define LOWER 1
-#define RAISE 2
-#define BTL   3
-#define MOUSE 4
-#define MSLOW 5
-#define MFAST 6
+#define GAME  1
+#define LOWER 2
+#define RAISE 3
+#define BTL   4
+#define MOUSE 5
+#define MSLOW 6
+#define MFAST 7
 
 // While holding D / F in the mouse layer, cursor speed is scaled.
 &mmv_input_listener {
@@ -58,6 +60,18 @@
             >;
         };
 
+        // Toggled from the BT layer (G). Plain SPACE so it can be held (jump/fly).
+        // Sits right above BASE so LOWER/RAISE still win while held.
+        game_layer {
+            display-name = "Game";
+            bindings = <
+   &trans &trans &trans &trans &trans &trans    &trans &trans &trans &trans &trans &trans
+   &trans &trans &trans &trans &trans &trans    &trans &trans &trans &trans &trans &trans
+   &trans &trans &trans &trans &trans &trans    &trans &trans &trans &trans &trans &trans
+                        &trans &trans &kp SPACE &trans &trans &trans
+            >;
+        };
+
         lower_layer {
             display-name = "Lower";
             bindings = <
@@ -82,7 +96,7 @@
             display-name = "BT";
             bindings = <
    &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4    &trans &trans &trans &trans &trans &trans
-   &trans     &trans       &trans       &trans       &trans       &trans          &trans &trans &trans &trans &trans &trans
+   &trans     &trans       &trans       &trans       &trans       &tog GAME       &trans &trans &trans &trans &trans &trans
    &trans     &trans       &trans       &trans       &trans       &trans          &trans &trans &trans &trans &trans &trans
                                         &kp LGUI     &trans       &kp SPACE       &kp RET &trans &kp RALT
             >;
