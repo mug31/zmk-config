@@ -4,7 +4,7 @@ Layers 0–3 = seller's stock keymap. Layer 4 = mouse keys, **hold Space**:
 
 ```
         ESC   ·    ·     ·     ·    ·      ·   LCLK   ↑   RCLK  SCR↑   ·
-        CTRL  ·    ·   MCLK  LCLK   ·      ·    ←     ↓    →    SCR↓   ·
+        CTRL  ·    ·   SLOW  FAST   ·      ·    ←     ↓    →    SCR↓   ·
         SHIFT ·    ·     ·     ·    ·      ·    ·     ·    ·     ·     ·
 ```
 
