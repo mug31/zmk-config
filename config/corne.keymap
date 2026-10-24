@@ -1,8 +1,8 @@
 /*
  * Corne keymap — layers 0-3 match the seller (KBDKSP) stock firmware,
  * decoded from KBDKSP_Corne_nicenanov2_ZMK_left.uf2.
- * New: MOUSE layer on hold SPACE; GAME layer (toggle: L1+L2 then G) makes
- * SPACE a plain key so it can be held in games.
+ * New: MOUSE layer on hold SPACE; GAME layer (toggle: L1+L2 then G) is a
+ * Minecraft layout: everything on the left half, SPACE a plain holdable key.
  */
 
 #include <behaviors.dtsi>
@@ -13,12 +13,13 @@
 
 #define BASE  0
 #define GAME  1
-#define LOWER 2
-#define RAISE 3
-#define BTL   4
-#define MOUSE 5
-#define MSLOW 6
-#define MFAST 7
+#define GFN   2
+#define LOWER 3
+#define RAISE 4
+#define BTL   5
+#define MOUSE 6
+#define MSLOW 7
+#define MFAST 8
 
 // While holding D / F in the mouse layer, cursor speed is scaled.
 &mmv_input_listener {
@@ -60,15 +61,27 @@
             >;
         };
 
-        // Toggled from the BT layer (G). Plain SPACE so it can be held (jump/fly).
+        // Minecraft, toggled from the BT layer (G). Everything on the left half:
+        // G = Tab, Z-B = hotbar 1-5, GUI thumb = MC Fn, plain SPACE (holdable).
         // Sits right above BASE so LOWER/RAISE still win while held.
         game_layer {
-            display-name = "Game";
+            display-name = "MC";
             bindings = <
-   &trans &trans &trans &trans &trans &trans    &trans &trans &trans &trans &trans &trans
-   &trans &trans &trans &trans &trans &trans    &trans &trans &trans &trans &trans &trans
-   &trans &trans &trans &trans &trans &trans    &trans &trans &trans &trans &trans &trans
-                        &trans &trans &kp SPACE &trans &trans &trans
+   &trans &trans  &trans  &trans  &trans  &trans      &trans &trans &trans &trans &trans &trans
+   &trans &trans  &trans  &trans  &trans  &kp TAB     &trans &trans &trans &trans &trans &trans
+   &trans &kp N1  &kp N2  &kp N3  &kp N4  &kp N5      &trans &trans &trans &trans &trans &trans
+                          &mo GFN &trans  &kp SPACE   &trans &trans &trans
+            >;
+        };
+
+        // Hold GUI thumb in MC: F-keys on top, L = advancements, hotbar 6-9/0.
+        game_fn_layer {
+            display-name = "MC Fn";
+            bindings = <
+   &kp F11 &kp F1 &kp F2 &kp F3 &kp F5 &kp FSLH    &trans &trans &trans &trans &trans &trans
+   &trans  &kp L  &none  &none  &none  &none       &trans &trans &trans &trans &trans &trans
+   &trans  &kp N6 &kp N7 &kp N8 &kp N9 &kp N0      &trans &trans &trans &trans &trans &trans
+                         &trans &trans &trans      &trans &trans &trans
             >;
         };
 
