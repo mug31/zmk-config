@@ -1,0 +1,88 @@
+/*
+ * Corne keymap — layers 0-3 match the seller (KBDKSP) stock firmware,
+ * decoded from KBDKSP_Corne_nicenanov2_ZMK_left.uf2.
+ * Layer 4 (MOUSE) is new: hold SPACE.
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/pointing.h>
+
+#define BASE  0
+#define LOWER 1
+#define RAISE 2
+#define BTL   3
+#define MOUSE 4
+
+/ {
+    behaviors {
+        // Tap = space, hold = mouse layer. Never a hold while typing
+        // (needs 150ms idle before the press).
+        spc_mouse: spc_mouse {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <175>;
+            require-prior-idle-ms = <150>;
+            bindings = <&mo>, <&kp>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        base_layer {
+            display-name = "Base";
+            bindings = <
+   &kp ESC    &kp Q &kp W &kp E    &kp R              &kp T          &kp Y    &kp U &kp I     &kp O   &kp P    &kp BSPC
+   &kp LCTRL  &kp A &kp S &kp D    &kp F              &kp G          &kp H    &kp J &kp K     &kp L   &kp SEMI &kp SQT
+   &kp LSHFT  &kp Z &kp X &kp C    &kp V              &kp B          &kp N    &kp M &kp COMMA &kp DOT &kp FSLH &kp TAB
+                          &kp LGUI &mo LOWER          &spc_mouse MOUSE SPACE  &kp RET &mo RAISE &kp RALT
+            >;
+        };
+
+        lower_layer {
+            display-name = "Lower";
+            bindings = <
+   &kp TAB   &kp N1   &kp N2 &kp N3   &kp N4   &kp N5          &kp N6    &kp N7   &kp N8    &kp N9   &kp N0    &kp BSPC
+   &kp CAPS  &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT       &kp CARET &kp AMPS &kp STAR  &kp LPAR &kp RPAR  &trans
+   &kp LSHFT &trans   &trans &trans   &trans   &trans          &trans    &kp INS  &kp PSCRN &kp SLCK &kp PAUSE_BREAK &kp PG_DN
+                             &kp LGUI &trans   &kp SPACE       &kp RET   &mo BTL  &kp RALT
+            >;
+        };
+
+        raise_layer {
+            display-name = "Raise";
+            bindings = <
+   &kp F1       &kp F2       &kp F3   &kp F4   &kp F5   &kp F6       &kp F7  &kp F8   &kp F9   &kp F10   &kp F11   &kp F12
+   &kp KP_MINUS &kp KP_EQUAL &kp LBKT &kp RBKT &kp BSLH &kp GRAVE    &trans  &kp HOME &kp UP   &kp END   &kp PG_UP &trans
+   &kp UNDER    &kp PLUS     &kp LBRC &kp RBRC &kp PIPE &kp TILDE    &trans  &kp LEFT &kp DOWN &kp RIGHT &kp PG_DN &trans
+                                      &kp LGUI &mo BTL  &kp SPACE    &kp RET &trans   &kp RALT
+            >;
+        };
+
+        bt_layer {
+            display-name = "BT";
+            bindings = <
+   &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4    &trans &trans &trans &trans &trans &trans
+   &trans     &trans       &trans       &trans       &trans       &trans          &trans &trans &trans &trans &trans &trans
+   &trans     &trans       &trans       &trans       &trans       &trans          &trans &trans &trans &trans &trans &trans
+                                        &kp LGUI     &trans       &kp SPACE       &kp RET &trans &kp RALT
+            >;
+        };
+
+        // Hold SPACE. Right: IJKL move, U/O left/right click, P/; scroll.
+        // Left: F left click (for dragging), D middle click. Shift+scroll = horizontal.
+        mouse_layer {
+            display-name = "Mouse";
+            bindings = <
+   &trans &none &none &none     &none     &none     &none &mkp LCLK      &mmv MOVE_UP   &mkp RCLK       &msc SCRL_UP   &none
+   &trans &none &none &mkp MCLK &mkp LCLK &none     &none &mmv MOVE_LEFT &mmv MOVE_DOWN &mmv MOVE_RIGHT &msc SCRL_DOWN &none
+   &trans &none &none &none     &none     &none     &none &none          &none          &none           &none          &none
+                      &trans    &trans    &trans    &trans &trans        &trans
+            >;
+        };
+    };
+};
