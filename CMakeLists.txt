@@ -1,4 +1,4 @@
-# Right-half OLED: portrait status screen (BT + battery on top, Luna below).
+# Right-half OLED: portrait status screen (BT + battery on top, Naruto below).
 # Only built where CONFIG_ZMK_DISPLAY_STATUS_SCREEN_CUSTOM is set (corne_right, see build.yaml).
 if(CONFIG_ZMK_DISPLAY AND CONFIG_ZMK_DISPLAY_STATUS_SCREEN_CUSTOM)
   zephyr_library()

@@ -5,10 +5,10 @@
  *
  *   rows   0-17  Bluetooth (link to the left half) + battery icon + percent
  *   row      18  dotted separator
- *   rows 100-121 Luna, who sits / walks / runs with how fast you type on this half
+ *   rows  86-121 Naruto: ninja stance when idle, Naruto-runs while you type on this half
  *   row     123  ground
  *
- * Luna pixel art by HellSingCoder (QMK, GPL-2.0), taken from mctechnology17/zmk-nice-oled.
+ * Naruto frames: fan sprite sheet from github.com/SKJTCodes/Naruto, halved and made 1-bit.
  * Only key presses on the right half count: the peripheral never sees the left half's keys.
  */
 
@@ -25,63 +25,103 @@
 
 #define PANEL_W 128
 #define PANEL_H 32
-#define LUNA_TOP 100
-#define LUNA_ROWS 22
+#define SPRITE_TOP 86
+#define SPRITE_ROWS 36
 #define GROUND_ROW 123
 
 /* Same convention as zmk-nice-oled's default (non-inverted) mode. */
 #define PX_ON lv_color_black()
 #define PX_OFF lv_color_white()
 
-/* sit1, sit2, walk1, walk2, run1, run2 */
-static const uint32_t luna[6][LUNA_ROWS] = {
-    {/* dog_sit1 */
-        0x00004100, 0x0000a280, 0x00015c80, 0x00010180,
-        0x00010080, 0x00021140, 0x00020040, 0x00020140,
-        0x00040040, 0x00040740, 0x00080280, 0x00d00080,
-        0x01200080, 0x02400080, 0x02400080, 0x02000100,
-        0x02000700, 0x01008d00, 0x00c0cd00, 0x0041cd00,
-        0x0030cb00, 0x000fb800,
+/* idle1, idle2, run1..run6 */
+static const uint32_t naruto[8][SPRITE_ROWS] = {
+    {/* idle1 */
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00004000, 0x0013c000, 0x241fe000,
+        0x7c9ff000, 0x001fe000, 0x000e3800, 0x004fe000,
+        0x011cc800, 0x390ffc00, 0x0807fe00, 0x0563de00,
+        0x0ff3ae00, 0x07f7f7c0, 0x0707f3ee, 0x0107f9da,
+        0x0007f8fc, 0x000ff03c, 0x001ffc3c, 0x003ffc38,
+        0x007ffe20, 0x00feff00, 0x01fe7f80, 0x03f81fc0,
+        0x03e007c0, 0x07e007e0, 0x07c007e0, 0x03c003e0,
+        0x0f0000e0, 0x1f8000f0, 0x3f0000f8, 0x1c000078,
     },
-    {/* dog_sit2 */
-        0x00004100, 0x0000a280, 0x00015c80, 0x00010180,
-        0x00010080, 0x00021140, 0x00020040, 0x00020140,
-        0x00040040, 0x00040740, 0x00080280, 0x01900280,
-        0x02a00080, 0x04400080, 0x04400080, 0x06000100,
-        0x02000700, 0x01008d00, 0x00c0cd00, 0x0041cd00,
-        0x0030cb00, 0x000fb800,
+    {/* idle2 */
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00024000, 0x000bc000, 0x000de000, 0x4817f000,
+        0x086fe000, 0x00063800, 0x09cfe000, 0x201cc800,
+        0x1017fc00, 0x0007fe00, 0x0011fe00, 0x02fbee00,
+        0x07fbf780, 0x07f3f7e0, 0x01e3f9e8, 0x0083f8d6,
+        0x0007f0fc, 0x000ff838, 0x001ffc70, 0x003fbe70,
+        0x007fff40, 0x00fe7f80, 0x01fe3fc0, 0x01f80fc0,
+        0x03e007e0, 0x03e007e0, 0x03e003e0, 0x03c003e0,
+        0x07c000e0, 0x0fc000f0, 0x1f8000f8, 0x0e000078,
     },
-    {/* dog_walk1 */
-        0x00000000, 0x00000000, 0x00001040, 0x000028a0,
-        0x00f05720, 0x01084060, 0x02044020, 0x047f8450,
-        0x04808010, 0x04000050, 0x05000010, 0x030001d0,
-        0x010000a0, 0x01000040, 0x01000040, 0x01040040,
-        0x010f0080, 0x010b8300, 0x009a8d00, 0x009a4d00,
-        0x00964b00, 0x00703800,
+    {/* run1 */
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000004, 0x0000f13c, 0x0038e1be,
+        0x002438ff, 0x000231ff, 0x000202ef, 0x00180076,
+        0x003fe3ff, 0x03fffeff, 0x03ffffff, 0x01f7ffde,
+        0x001fff9e, 0x001fff04, 0x003ffe00, 0x007ff800,
+        0x00fffc00, 0x03fffe00, 0x07f97f00, 0x1feffe00,
+        0x3f8ffc00, 0x7e0ff000, 0xfc1e4000, 0xf81c0000,
+        0xe0180000, 0xc0000000, 0xc0000000, 0x80000000,
     },
-    {/* dog_walk2 */
-        0x00000000, 0x00000000, 0x00000000, 0x00001040,
-        0x000028a0, 0x00e05720, 0x01104060, 0x02084020,
-        0x047f8450, 0x04808010, 0x04000050, 0x05000010,
-        0x050001d0, 0x030000a0, 0x01000040, 0x01000040,
-        0x010c0080, 0x01138100, 0x01296200, 0x01255200,
-        0x01436900, 0x01c00700,
+    {/* run2 */
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000004, 0x0000013c, 0x000101be,
+        0x000840ff, 0x00084bff, 0x000008ef, 0x00000076,
+        0x00277fff, 0x03ffbeff, 0x0dffffff, 0x3ef3ffde,
+        0x7c13f39e, 0xfe1ffe04, 0xffbffe00, 0x07ffd000,
+        0x07ffe000, 0x03fff000, 0x01fbf800, 0x00f0f800,
+        0x0060f800, 0x0000fc00, 0x00007c00, 0x00007000,
+        0x00007e00, 0x00007f00, 0x00007e00, 0x00007000,
     },
-    {/* dog_run1 */
-        0x00000000, 0x00000000, 0x00001c40, 0x038012a0,
-        0x04401990, 0x08401010, 0x08806008, 0x08ff8114,
-        0x08000004, 0x04000014, 0x03800004, 0x008000f4,
-        0x00800048, 0x01800030, 0x028000c0, 0x03840180,
-        0x020b0240, 0x041cc720, 0x05e024e0, 0x06001200,
-        0x00000900, 0x00000700,
+    {/* run3 */
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000040,
+        0x000013c0, 0x00401be0, 0x00101ff8, 0x00124ff0,
+        0x00020ef0, 0x00000760, 0x0073fff0, 0x1ff9eff0,
+        0x1ffffff0, 0x1ffffff0, 0x0f5fffe0, 0x01fff040,
+        0x01ffc000, 0x07ff0000, 0x077e0000, 0x07ff0000,
+        0x07ff0000, 0x05fc0000, 0x1ffc0000, 0x1ff00000,
+        0x1ec00000, 0x0e000000, 0x0e000000, 0x04000000,
     },
-    {/* dog_run2 */
-        0x00000000, 0x00000000, 0x00000000, 0x00003880,
-        0x0e002540, 0x12003320, 0x12002010, 0x1201c008,
-        0x11fe0114, 0x10000004, 0x08000014, 0x04800004,
-        0x038000f4, 0x00800048, 0x00800030, 0x00800040,
-        0x00410080, 0x0021c100, 0x00114700, 0x00124d00,
-        0x00094b00, 0x00073000,
+    {/* run4 */
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000004, 0x0000013c, 0x000008be,
+        0x002000ff, 0x002010ff, 0x0006116f, 0x000001f6,
+        0x00007fff, 0x0001feff, 0x003fffff, 0x03ffffde,
+        0x03ffff9e, 0x00effe04, 0x003ffe00, 0x007ff800,
+        0x00fffc00, 0x03fdfe00, 0x07f97f00, 0x1feffe00,
+        0x3f8ffc00, 0x7e0ff000, 0xfc1e4000, 0xf81c0000,
+        0xe0180000, 0xc0000000, 0xc0000000, 0x80000000,
+    },
+    {/* run5 */
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000004, 0x0001a13c, 0x0000a1be,
+        0x001c07ff, 0x000031ff, 0x00073aef, 0x00070076,
+        0x000c7fff, 0x01ff7eff, 0x0fffffff, 0x3d6fffde,
+        0x7c10df9e, 0xfe1ffe04, 0xffbf7e00, 0x07ffd000,
+        0x07fee000, 0x03fff000, 0x01fbf800, 0x00f0f800,
+        0x0060f800, 0x0000fc00, 0x00007c00, 0x00007000,
+        0x00007e00, 0x00007f00, 0x00007e00, 0x00007000,
+    },
+    {/* run6 */
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00120040,
+        0x001513c0, 0x00409be0, 0x00030ff8, 0x00274ff0,
+        0x006006f0, 0x00000760, 0x0073fff0, 0x1ff9eff0,
+        0x1ffffff0, 0x1ffffff0, 0x0f5fffe0, 0x01fff040,
+        0x01ffc000, 0x07ff0000, 0x073e0000, 0x07ff0000,
+        0x07ff0000, 0x07fe0000, 0x1ff00000, 0x1ff00000,
+        0x1ec00000, 0x0e000000, 0x0e000000, 0x04000000,
     },
 };
 
@@ -108,10 +148,10 @@ static void px(int x, int y, bool on) {
     cbuf[x * PANEL_W + (PANEL_W - 1 - y)] = on ? PX_ON : PX_OFF;
 }
 
-static void draw_luna(int frame) {
-    for (int r = 0; r < LUNA_ROWS; r++) {
+static void draw_sprite(int frame) {
+    for (int r = 0; r < SPRITE_ROWS; r++) {
         for (int x = 0; x < 32; x++) {
-            px(x, LUNA_TOP + r, luna[frame][r] & (1u << (31 - x)));
+            px(x, SPRITE_TOP + r, naruto[frame][r] & (1u << (31 - x)));
         }
     }
     lv_obj_invalidate(canvas);
@@ -219,7 +259,7 @@ static struct link_state link_get_state(const zmk_event_t *eh) {
 ZMK_DISPLAY_WIDGET_LISTENER(pet_link, struct link_state, link_update_cb, link_get_state)
 ZMK_SUBSCRIPTION(pet_link, zmk_split_peripheral_status_changed);
 
-/* typing activity: every press on this half adds 100, each tick keeps 85% */
+/* typing activity: every press on this half adds 100, each tick keeps 92% (~1 s to settle) */
 static atomic_t presses;
 
 static int pet_key_listener(const zmk_event_t *eh) {
@@ -233,22 +273,26 @@ static int pet_key_listener(const zmk_event_t *eh) {
 ZMK_LISTENER(pet_keys, pet_key_listener);
 ZMK_SUBSCRIPTION(pet_keys, zmk_position_state_changed);
 
-#define TICK_MS 150
-#define WALK_AT 30
-#define RUN_AT 350
+#define TICK_MS 80
+#define RUN_AT 30
+#define FAST_AT 300
 
 static void pet_tick(lv_timer_t *timer) {
     static int activity, ticks, frame = -1;
 
-    activity = activity * 85 / 100 + atomic_set(&presses, 0) * 100;
+    activity = activity * 92 / 100 + atomic_set(&presses, 0) * 100;
+    ticks++;
 
-    /* sit: flip every 6 ticks, walk: every 2, run: every tick */
-    int base = activity < WALK_AT ? 0 : activity < RUN_AT ? 2 : 4;
-    int every = base == 0 ? 6 : base == 2 ? 2 : 1;
-    int next = base + ((ticks++ / every) & 1);
+    int next;
+    if (activity < RUN_AT) {
+        next = (ticks / 5) & 1; /* idle stance, 400 ms per frame */
+    } else {
+        int every = activity < FAST_AT ? 2 : 1; /* 160 ms or 80 ms per frame */
+        next = 2 + (ticks / every) % 6;
+    }
     if (next != frame) {
         frame = next;
-        draw_luna(frame);
+        draw_sprite(frame);
     }
 }
 
@@ -263,7 +307,7 @@ lv_obj_t *zmk_display_status_screen(void) {
     for (int x = 0; x < 32; x += 2) {
         px(x, GROUND_ROW, true);
     }
-    draw_luna(0);
+    draw_sprite(0);
     draw_status();
     lv_timer_create(pet_tick, TICK_MS, NULL);
 
